@@ -94,9 +94,7 @@ namespace CarInsurance2.Controllers
                 if (insuree.DUI == true) { quote *= 1.25m; }
                 else if (insuree.CoverageType == true) { quote *= 1.5m; }
 
-                decimal Quote = Convert.ToDecimal(quote);
-
-                db.Insurees.Add(Quote);
+                insuree.Quote = quote;
 
                 db.Insurees.Add(insuree);
                 db.SaveChanges();
