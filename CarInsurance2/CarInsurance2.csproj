@@ -217,7 +217,6 @@
     <Content Include="Views\Insuree\Edit.cshtml" />
     <Content Include="Views\Insuree\Index.cshtml" />
     <Content Include="Views\Home\Admin.cshtml" />
-    <Content Include="Views\Insuree\GenerateQuote.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

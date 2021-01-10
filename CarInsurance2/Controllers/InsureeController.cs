@@ -170,13 +170,11 @@ namespace CarInsurance2.Controllers
             base.Dispose(disposing);
         }
 
+        public ActionResult Admin()
+        {
+            return View(db.Insurees.ToList());
+        }
         
         
-        //public ActionResult Admin()
-        //{
-        //    string queryString = @"SELECT Id, firstName, lastName, emailAddress, dateOfBirth, carYear, carMake, carModel, Dui, speedingTickets, CoverageType, Quote FROM Insurees";
-        //    Insuree insuree = new Insuree();
-
-        //}
     }
 }
