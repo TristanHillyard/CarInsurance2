@@ -43,100 +43,67 @@ namespace CarInsurance2.Controllers
             return View();
         }
 
-        [HttpPost]
-        public ActionResult NewQuote(string FirstName, string LastName, string EmailAddress, int CarYear, string CarMake, string CarModel,
-            bool DUI, int SpeedingTickets, bool CoverageType)
-        {
-            Insuree insuree = new Insuree();
-            var quote = 50m;
-            var age = Convert.ToInt32(insuree.DateOfBirth);
-
-            if (age < 18)
-            {
-                quote += 25;
-            }
-            else if (age >= 19 && age <= 25)
-            {
-                quote += 25;
-            }
-            else if (age > 25)
-            {
-                quote += 25;
-            }
-            else if (CarYear < 2000)
-            {
-                quote += 25;
-            }
-            else if (CarYear > 2015)
-            {
-                quote += 25;
-            }
-            else if (CarMake.ToLower() == "porsche")
-            {
-                quote += 25;
-            }
-            else if (CarMake.ToLower() == "porsche" && CarModel == "911 carrera")
-            {
-                quote += 25;
-            }
-
-
-            quote = quote + (SpeedingTickets * 10);
-            if (DUI == true) { quote *= 1.25m; }
-            else if (CoverageType == true) { quote *= 1.5m; }
-
-            decimal Quote = Convert.ToDecimal(quote);
-
-            string queryString = @"INSERT INTO Insuree (FirstName, LastName, EmailAddress, CarYear, CarMake, CarModel, DUI, SpeedingTickets, CoverageType, Quote)
-                                   VALUES (@FirstName, LastName, EmailAddress,CarYear, @CarMake, @CarModel, @Dui, @SpeedingTickets, @CoverageType, @Quote)";
-            using(SqlConnection connection = new SqlConnection(connectionString))
-            {
-                SqlCommand command = new SqlCommand(queryString, connection);
-                command.Parameters.Add("FirstName", SqlDbType.VarChar);
-                command.Parameters.Add("LastName", SqlDbType.VarChar);
-                command.Parameters.Add("EmailAddress", SqlDbType.VarChar);
-                command.Parameters.Add("DateOfBirth", SqlDbType.Date);
-                command.Parameters.Add("CarYear", SqlDbType.VarChar);
-                command.Parameters.Add("CarMake", SqlDbType.VarChar);
-                command.Parameters.Add("CarModel", SqlDbType.VarChar);
-                command.Parameters.Add("DUI", SqlDbType.Bit);
-                command.Parameters.Add("SpeedingTickets", SqlDbType.Int);
-                command.Parameters.Add("CoverageType", SqlDbType.Bit);
-                command.Parameters.Add("Quote", SqlDbType.Money);
-
-                command.Parameters["FirstName"].Value = FirstName;
-                command.Parameters["LastName"].Value = LastName;
-                command.Parameters["EmailAddress"].Value = EmailAddress;
-                command.Parameters["DateOfBirth"].Value =  age;
-                command.Parameters["CarYear"].Value = CarYear;
-                command.Parameters["CarMake"].Value = CarMake;
-                command.Parameters["DUI"].Value = DUI;
-                command.Parameters["CoverageType"].Value = CoverageType;
-                command.Parameters["Quote"].Value = Quote;
-
-                connection.Open();
-                command.ExecuteNonQuery();
-                connection.Close();
-            }
-            return View(insuree);
-        }
+        
 
         // POST: Insuree/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult Create([Bind(Include = "Id,FirstName,LastName,EmailAddress,DateOfBirth,CarYear,CarMake,CarModel,DUI,SpeedingTickets,CoverageType,Quote")] Insuree insuree)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        db.Insurees.Add(insuree);
-        //        db.SaveChanges();
-        //        return RedirectToAction("Index");
-        //    }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Create([Bind(Include = "Id,FirstName,LastName,EmailAddress,DateOfBirth,CarYear,CarMake,CarModel,DUI,SpeedingTickets,CoverageType,Quote")] Insuree insuree)
+        {
+            if (ModelState.IsValid)
+            {
+                var quote = 50m;
+                var date = Convert.ToString(insuree.DateOfBirth);
+                DateTime d1 = DateTime.Now;
+                TimeSpan difference = d1.Subtract(date);
+                var stringAge = (difference.TotalDays / 365.25).ToString();
+                var age = Convert.ToInt32(stringAge);
 
-        //    return View(insuree);
-        //}
+                if (age < 18)
+                {
+                    quote += 25;
+                }
+                else if (age >= 19 && age <= 25)
+                {
+                    quote += 25;
+                }
+                else if (age > 25)
+                {
+                    quote += 25;
+                }
+                else if (insuree.CarYear < 2000)
+                {
+                    quote += 25;
+                }
+                else if (insuree.CarYear > 2015)
+                {
+                    quote += 25;
+                }
+                else if (insuree.CarMake.ToLower() == "porsche")
+                {
+                    quote += 25;
+                }
+                else if (insuree.CarMake.ToLower() == "porsche" && insuree.CarModel == "911 carrera")
+                {
+                    quote += 25;
+                }
+
+
+                quote = quote + (insuree.SpeedingTickets * 10);
+                if (insuree.DUI == true) { quote *= 1.25m; }
+                else if (insuree.CoverageType == true) { quote *= 1.5m; }
+
+                decimal Quote = Convert.ToDecimal(quote);
+
+                db.Insurees.Add(insuree);
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+
+            return View(insuree);
+        }
 
         // GET: Insuree/Edit/5
         public ActionResult Edit(int? id)
