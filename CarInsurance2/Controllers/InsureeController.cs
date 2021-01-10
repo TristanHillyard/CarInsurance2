@@ -13,7 +13,6 @@ namespace CarInsurance2.Controllers
 {
     public class InsureeController : Controller
     {
-        private readonly string connectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog = master; Integrated Security = True; Connect Timeout = 30; Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
         private InsuranceEntities db = new InsuranceEntities();
 
         // GET: Insuree
@@ -55,11 +54,11 @@ namespace CarInsurance2.Controllers
             if (ModelState.IsValid)
             {
                 var quote = 50m;
-                var date = Convert.ToString(insuree.DateOfBirth);
+                var date = insuree.DateOfBirth;
                 DateTime d1 = DateTime.Now;
                 TimeSpan difference = d1.Subtract(date);
                 var stringAge = (difference.TotalDays / 365.25).ToString();
-                var age = Convert.ToInt32(stringAge);
+                var age = Convert.ToDouble(stringAge);
 
                 if (age < 18)
                 {
@@ -96,6 +95,8 @@ namespace CarInsurance2.Controllers
                 else if (insuree.CoverageType == true) { quote *= 1.5m; }
 
                 decimal Quote = Convert.ToDecimal(quote);
+
+                db.Insurees.Add(Quote);
 
                 db.Insurees.Add(insuree);
                 db.SaveChanges();
