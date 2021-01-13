@@ -60,27 +60,29 @@ namespace CarInsurance2.Controllers
                 var stringAge = (difference.TotalDays / 365.25).ToString();
                 var age = Convert.ToDouble(stringAge);
 
-                if (age < 18)
+                if (age <= 18)
                 {
                     quote += 25;
                 }
                 else if (age >= 19 && age <= 25)
                 {
-                    quote += 25;
+                    quote += 50;
                 }
-                else if (age > 25)
+                else
                 {
                     quote += 25;
                 }
-                else if (insuree.CarYear < 2000)
+
+                if (insuree.CarYear < 2000)
                 {
                     quote += 25;
                 }
-                else if (insuree.CarYear > 2015)
+                else if(insuree.CarYear > 2015)
                 {
                     quote += 25;
                 }
-                else if (insuree.CarMake.ToLower() == "porsche")
+
+                if (insuree.CarMake.ToLower() == "porsche")
                 {
                     quote += 25;
                 }
@@ -92,7 +94,7 @@ namespace CarInsurance2.Controllers
 
                 quote = quote + (insuree.SpeedingTickets * 10);
                 if (insuree.DUI == true) { quote *= 1.25m; }
-                else if (insuree.CoverageType == true) { quote *= 1.5m; }
+                if (insuree.CoverageType == true) { quote *= 1.5m; }
 
                 insuree.Quote = quote;
 
